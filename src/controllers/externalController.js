@@ -45,8 +45,8 @@ const poblarProductos = async (req, res) => {
 const buscarCoincidenciasEnElNombre = async (req, res) => {
     try{
         const coincidencia = req.params.coincidencia;
-        const {rows, rowsCount} = await pool.query('SELECT FROM productos WHERE nombre ILIKE $1', [`%${coincidencia}%`]);
-        if(rowsCount === 0){
+        const {rows, rowCount} = await pool.query('SELECT * FROM productos WHERE nombre ILIKE $1', [`%${coincidencia}%`]);
+        if(rowCount === 0){
             return res.status(500).json({ mensaje: 'Error al buscar' });
         }
         res.json(rows);
@@ -59,7 +59,7 @@ const buscarCoincidenciasEnElNombre = async (req, res) => {
 const buscarProductosDeCategoria = async (req, res) => {
     try{
         const cat = req.params.cat;
-        const {rows, rowCount} = await pool.query('SELECT p.* FROM productos p JOIN categoria c ON p.categoria_id = c.id WHERE c.nombre ILKE $1', [`%${cat}%`]);
+        const {rows, rowCount} = await pool.query('SELECT p. * FROM productos p JOIN categoria c ON p.categoria_id = c.id WHERE c.nombre ILIKE $1', [`%${cat}%`]);
         if(rowCount == 0){
             return res.status(404).json({ mensaje: 'Error al buscar productos' });
         }
