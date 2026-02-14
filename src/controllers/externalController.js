@@ -70,4 +70,19 @@ const buscarProductosDeCategoria = async (req, res) => {
     }
 }; 
 
-module.exports = {poblarProductos, buscarCoincidenciasEnElNombre, buscarProductosDeCategoria};
+//Practica 2.2 Buscardor Inteligente
+const buscador = async (req, res) => {
+    try{
+        const q = req.query.q;
+        if(!q || q.trim() === ""){
+            return res.status(400).json({ mensaje: 'Paramero no enviado' });
+        }
+        const {rows} = await pool.query(`SELECT p.nombre, p.descripcion, p.precio, p.stock, c.nombre AS categoria FROM productos p JOIN categoria c ON p.categoria_id = c.id WHERE p.nombre ILIKE $1 OR p.descripcion ILIKE $1`, [`%${q}%`]);
+        res.json(rows);
+    }catch (error){
+        console.error(error);
+        res.status(500).json({ error: 'Erro al buscar' });
+    }
+};
+
+module.exports = {poblarProductos, buscarCoincidenciasEnElNombre, buscarProductosDeCategoria, buscador};
