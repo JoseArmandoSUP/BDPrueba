@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 
 const poblarProductos = async (req, res) => {
+    //const client = await pool.connect();
     try{
         // Fetch FakeStoreApi
         const apiFetch = await fetch ('http://fakestoreapi.com/products');
@@ -13,6 +14,8 @@ const poblarProductos = async (req, res) => {
                 [categori]
             );
         }
+
+        //await client.query('BEGIN')
 
         let inserciones = 0;
         // Destructuracion el objeto
