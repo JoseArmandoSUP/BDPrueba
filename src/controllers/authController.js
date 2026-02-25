@@ -1,8 +1,8 @@
 const pool = require('../config/db');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // <---- Va a comparar la cadena existente en la BD con la poniente
 
-const register = async (req, res) => {
+const register = async (req, res) => { //Usa el hashing
     const {email, password} = req.body;
     try{
         const userExist = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
@@ -31,7 +31,7 @@ const login = async (req, res) => {
     try{
         const result = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
         if(result.rows.length === 0){
-            return res.status(400).json({ mensaje: "Credenciales Invalidas" });
+            return res.status(400).json({ mensaje: "Credenciales Invalidas (Email)" });
         }
 
         const usuario = result.rows[0];
@@ -42,16 +42,16 @@ const login = async (req, res) => {
             return res.status(400).json({ mensaje: "Credenciales Invalidas (Password)" }); 
         }
 
-        const playload = {
+        const playload = { // Precarga que se hace, arma un objeto que se carga al token
             id: usuario.id,
             rol: usuario.rol,
             email: usuario.email
         };
 
-        const token = jwt.sign(
-            playload, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '1h' }
+        const token = jwt.sign( // Firma del token
+            playload, // Le enviamos la informacion del usuario 
+            process.env.JWT_SECRET, // Palabra secreta
+            { expiresIn: '1h' } // Tiempo decaducidad para el token (durará hora)
         );
 
         res.json({
