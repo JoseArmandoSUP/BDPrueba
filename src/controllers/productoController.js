@@ -10,9 +10,12 @@ const getProducto = async (req, res) => {
 };
 
 const createProducto = async (req, res) => {
-    const {nombre, precio, stock, descripcion} = req.body;
+    const {nombre, precio, stock, descripcion, imagenUrl, categoria_id} = req.body;
     try{
-        const {rows, rowCount} = await pool.query('INSERT INTO productos (nombre, precio, stock, descripcion) VALUES ($1, $2, $3, $4) RETURNING *', [nombre, precio, stock, descripcion]);
+        if(!nombre || !precio || !categoria_id){
+            return res.status(400).json({ msg: "nombre, descripcion o productos son requeridos" })
+        }
+        const {rows, rowCount} = await pool.query('INSERT INTO productos (nombre, precio, stock, descripcion, imagenUrl, categoria_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [nombre, precio, stock, descripcion, imagenUrl, categoria_id]);
         if(rowCount === 0){
             return res.status(400).json({ error: 'Error al insertar' });
         }

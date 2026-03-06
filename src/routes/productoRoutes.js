@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const productoController = require('../controllers/productoController');
+const middleware = require('../middleware/authmiddleware');
 
-router.get('/', productoController.getProducto);
+router.get('/', middleware, productoController.getProducto);
 
-router.post('/', productoController.createProducto);
+router.post('/', middleware, productoController.createProducto);
 
-router.put('/:id', productoController.actualizarProducto);
+router.put('/:id', middleware, productoController.actualizarProducto);
 
-router.delete('/:id', productoController.borrarProducto);
+router.delete('/:id', middleware, productoController.borrarProducto);
 
 module.exports = router;
